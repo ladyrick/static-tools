@@ -1,0 +1,29 @@
+name: release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: build
+        run: ./build.sh --release
+        timeout-minutes: 180
+
+      - name: upload
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: 'dist/*'
+          bodyFile: 'release.md'
+          replacesArtifacts: true
+          allowUpdates: true
