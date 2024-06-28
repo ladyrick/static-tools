@@ -1,12 +1,6 @@
 FROM static-tools:build-base-amd64
 ARG proxy=
 
-RUN all_proxy=$proxy curl -sL 'https://github.com/gokcehan/lf/releases/download/r31/lf-linux-amd64.tar.gz' | tar xzvf - \
-    && ARCH=amd64 /collect.sh lf
-
-RUN all_proxy=$proxy curl -sL 'https://github.com/gokcehan/lf/releases/download/r31/lf-linux-arm64.tar.gz' | tar xzvf - \
-    && ARCH=arm64v8 /collect.sh lf
-
 RUN all_proxy=$proxy curl -sL 'https://github.com/antonmedv/walk/releases/download/v1.7.0/walk_linux_amd64' -o walk \
     && ARCH=amd64 /collect.sh walk
 
