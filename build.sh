@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+# set -e
 
 docker run --privileged --rm tonistiigi/binfmt --install arm64
 
@@ -10,14 +10,16 @@ rm -rf dist
 mkdir -p dist
 
 archs=(amd64 arm64v8)
-
-for arch in ${archs[@]}; do
+platforms=(linux/amd64 linux/arm64/v8)
+for i in ${!archs[@]}; do
+	arch=${archs[i]}
+	platform=${platforms[i]}
 	# build base image to save some repeated works
-	docker build --platform linux/$arch build-base -t static-tools:build-base-$arch --build-arg arch=$arch
+	docker build --platform $platform build-base -t static-tools:build-base-$arch --build-arg arch=$arch --build-arg platform=$platform
 
 	for tool in $(ls tools); do
-		docker build --platform linux/$arch tools/$tool -t static-tools:$tool-$arch --build-arg arch=$arch --build-arg proxy=$HTTPS_PROXY
-		docker run --platform linux/$arch --rm -v "$(pwd)/dist:/dist" static-tools:$tool-$arch /collect.sh
+		docker build --platform $platform tools/$tool -t static-tools:$tool-$arch --build-arg arch=$arch --build-arg proxy=$HTTPS_PROXY
+		docker run --platform $platform --rm -v "$(pwd)/dist:/dist" static-tools:$tool-$arch /collect.sh
 	done
 done
 

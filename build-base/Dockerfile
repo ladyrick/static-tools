@@ -1,5 +1,6 @@
 ARG arch=
-FROM $arch/alpine:3.19
+ARG platform=
+FROM --platform=$platform $arch/alpine:3.19
 ARG arch=
 ENV ARCH=$arch
 
